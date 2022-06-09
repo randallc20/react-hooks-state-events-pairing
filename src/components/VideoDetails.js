@@ -1,10 +1,31 @@
 import React, {useState} from 'react'
 import CommentList from './CommentList'
+import Search from "./Search.js";
+import Sort from "./Sort.js";
 
 //this will have the comments and the likes
 function VideoDetails({video}) {
     const [upvote, setUpvote] = useState(video.upvotes)
     const [downvote, setDownVote] = useState(video.downvotes)
+    const [toggleComment, setToggleComment] = useState(true)
+    const [allComments, setAllComments] = useState(video.comments)
+
+    function handleDelete(id) {
+        //console.log("this is the ID from handleDelete: " + id) //this is getting the correct ID now
+        setAllComments(allComments.filter((comment) => {
+            if (id === comment.id){
+                return false
+            }
+            else{
+                return true
+            }
+        }))
+    }
+
+    function handlesComments() {
+        //setToggleComment(!toggleComment)//without callback
+        setToggleComment((toggleComment) => !toggleComment)//with callback
+    }
 
     function handlesUpvote() {
         setUpvote(upvote + 1)
@@ -25,9 +46,11 @@ function VideoDetails({video}) {
             <button onClick={handlesDownvote} className="downvotes">
                 👎 {downvote}
             </button>
-            <button>Hide Comments</button>
+            <Search allComments={allComments}/>
+            <Sort />
+            <button onClick={handlesComments}> {toggleComment ? "Hide Comments" : "Show Comments"} </button>
             <p>------------------------------------------------------------------------------</p>
-            <CommentList comments={video.comments}/>
+            <CommentList allComments={allComments} show={toggleComment} handleDelete={handleDelete}/>
 
           </div>
     </div>
